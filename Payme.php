@@ -1,4 +1,7 @@
 <?php
+ini_set('date.timezone', 'Asia/Bangkok');
+ini_set("display_errors", 1);
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_DEPRECATED));
 
 /**
  * API Payme.in.th Version 1.2
@@ -10,7 +13,7 @@ class Payme
     private static $_PAYME = "https://www.payme.in.th/tmapi.php?";
     private static $_MERCHANT = "";
     private static $_ALLOWIP = array("27.254.144.22"); // หากมี IP อื่นๆสามารถเพิ่มได้
-    
+
 
     private static function getMERCHANT()
     {
@@ -35,7 +38,7 @@ class Payme
 
         if (!self::validate_custom("/^[0-9]{14}+$/", $tmCode)) return "Error is not truemoney code !!";
         if (!self::validate_custom("/^[0-9A-Z]+$/", self::getMERCHANT())) return "Error is not merchant code !!";
-        
+
         if(is_array($data)) {
             foreach ($data as $key => $item) {
                 $dataVal[] = "$key=$item";
@@ -95,13 +98,13 @@ class Payme
             $status['tmStatus'] = "Error ip is not payme server !";
         }
         $msg2 = $status['tmRef1']." ".$status['tmRef2']." ".$status['tmRef3'];
-        file_put_contents("mylog.txt", date("Y-m-d H:i:s") . " - $msg2\n", FILE_APPEND);
+        //file_put_contents("mylog.txt", date("Y-m-d H:i:s") . " - $msg2\n", FILE_APPEND);
         return $status;
     }
 
     public static function log($msg)
     {
-        file_put_contents("log-topup.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
+        file_put_contents("log-topup-pm.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
     }
 
     private static function validate_custom($pattern, $string)
