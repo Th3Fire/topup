@@ -4,6 +4,7 @@
  * */
 session_start();
 require_once "Payme.php";
+require_once("connect_db.php");
 
 $log = true;
 
@@ -31,6 +32,15 @@ if ($result['tmStatus'] == 1) {
      * SUCCEED|<username>|<ค่าที่ได้>|<ค่าอื่นๆ>
      * */
     // Code ที่คุณต้องการ หากบัตรที่ต้องการตรวจสอบไม่มียอดเงิน
-    $cPayme->log("ip: {$result['ip']} , status: {$result['tmStatus']}, code: {$result['tmCode']}, amount: {$result['tmAmount']}, money: {$result['tmRealAmount']}, msg: {$result['tmMsg']} ,Ref.1: {$result['tmRef1']} ,Ref.2: {$result['tmRef2']} ,Ref.3: {$result['tmRef3']} ");
+    // 
+    $sqlPro ="UPDATE member set tmStatus = 0 WHERE ID = " . $result['id'];
+    if (mysqli_query($con, $sqlPro)) {
+        echo "Record updated successfully";
+    } else {
+        echo "Error updating record: " . mysqli_error($con);
+    }
+
+
+    $cPayme->log("id: {$result['id']} ,ip: {$result['ip']} , status: {$result['tmStatus']}, code: {$result['tmCode']}, amount: {$result['tmAmount']}, money: {$result['tmRealAmount']}, msg: {$result['tmMsg']} ,Ref.1: {$result['tmRef1']} ,Ref.2: {$result['tmRef2']} ,Ref.3: {$result['tmRef3']} ");
     echo "SUCCEED|{$result['tmStatus']}"; // ค่าตอบกลับให้กับ Payme เมื่อได้รับค่าจาก Payme เรียบร้อย !! หากต้องการใส่ข้อความกำกับสำหรับบริการต่างๆ สามารถใส่ | หลังค่า SUCCEED
 }
