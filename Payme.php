@@ -88,6 +88,7 @@ class Payme
                 "tmRef2" => $_GET['Ref2'],
                 "tmRef3" => $_GET['Ref3'],
                 "ip" => $_GET['ip'],
+                "id" => $_GET['id'],
             );
         } else {
             if ($log) file_put_contents("payme-log.txt", date("Y-m-d H:i:s") . " - [ $_SERVER[REMOTE_ADDR] ] not allow ipaddress error access..\n", FILE_APPEND);
@@ -107,4 +108,5 @@ class Payme
     {
         return !preg_match($pattern, $string) ? false : true;
     }
+
 }
