@@ -6,7 +6,7 @@ $domain = "fb.wuttinunt.me"; // โดเมนของคุณ
 $merchantCode = "WUTTINUPME"; // MERCHANT CODE จาก Payme
 
 $cPayme = new Payme();
-$returnURL = "http://$domain/topup2/presult.php"; // URL ที่ต้องการให้ส่งค่ากลับ หลังจากส่งรหัสบัตรทรูมันนี่ไปตรวจสอบ
+$returnURL = "http://$domain/topup/presult.php"; // URL ที่ต้องการให้ส่งค่ากลับ หลังจากส่งรหัสบัตรทรูมันนี่ไปตรวจสอบ
 $cPayme->setMERCHANT($merchantCode); // ตั้งค่า MERCHANT CODE จาก Payme
 
 $cmd = $_POST['cmd'];
@@ -18,19 +18,39 @@ $myArray = array();
 
 //file_put_contents("c.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
 
+
 if($cmd == "topup"){
-  $msg = "cmd = {$_POST['cmd']} , code = {$_POST['paymeCode']} , ref1 = {$_POST['ref1']} , ref2 = {$_POST['ref2']} , ref3 = {$_POST['ref3']}";
-  file_put_contents("c.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
+
 // เพิ่ม Code บันทึกลงฐานข้อมูล หรือ ตรวจสอบรหัสบัตรซ้ำ
     $cPayme->log("{$_POST['cmd']} << cmd.");
-    $cPayme->log("{$_POST['paymeCode']} insert.");
+    $cPayme->log("id: {$_SERVER["REMOTE_ADDR"]}, {$_POST['paymeCode']} insert.");
+
+        if(strlen($_POST['paymeCode']) != 14){
+            $myArray[0] = 10;
+        }
+        // check if e-mail address is well-formed
+        else if (!filter_var($_POST['ref1'], FILTER_VALIDATE_EMAIL)) {
+          //$emailErr = "Invalid email format";
+          $myArray[0] = 20;
+        }else {
+
+    $sqlCode = "SELECT * From member WHERE tmCode =".$_POST['paymeCode'];
+    $coderesult = mysqli_query($con,$sqlCode);
+    if($coderesult->num_rows > 0){
+      $myArray[0] = 99;
+
+    }else {
+
+    $msg = "cmd = {$_POST['cmd']} , code = {$_POST['paymeCode']} , ref1 = {$_POST['ref1']} , ref2 = {$_POST['ref2']} , ref3 = {$_POST['ref3']}";
+    //file_put_contents("c.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
+
     $sql = "SELECT max(ID) as id FROM member";
     $sqlresult = mysqli_query($con,$sql);
     if($sqlresult->num_rows > 0){
         while ($rows = $sqlresult->fetch_array(MYSQL_BOTH)) {
             $id = $rows['id']+1;
             $msgId = "id : ".$id;
-            file_put_contents("id.txt", date("Y-m-d H:i:s") . " - $msgId\n", FILE_APPEND);
+            //file_put_contents("id.txt", date("Y-m-d H:i:s") . " - $msgId\n", FILE_APPEND);
         }
     }
 
@@ -50,7 +70,7 @@ if($cmd == "topup"){
         $mysql = "INSERT INTO member (tmCode,Name,Email,tmStatus,Status,Detail,Password) VALUES('".$_POST['paymeCode']."','".$dataField['Ref3']."','".$dataField['Ref1']."',7,'NULL','','".$dataField['Ref2']."')";
       if (mysqli_query($con, $mysql)) {
           echo "Record Add User successfully";
-          echo json_encode($myArray);
+
           exit();
       } else {
           echo "Error Adding user record: " . mysqli_error($con);
@@ -61,24 +81,45 @@ if($cmd == "topup"){
     } else {
     // Code ของคุณเมื่อไม่สามารถส่งค่าให้กับ Payme ได้
     // เป็นค่า Error อื่นๆที่ payme ส่งกลับมา
+
         $cPayme->log("{$_POST['paymeCode']} $result ");
         $myArray[0] = 99;
+
+
         //$msg = "array = ";
         //file_put_contents("id.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
-        return $myArray[0];
-        //echo json_encode($myArray);
-        //exit();
+
+
     //echo $result;
     }
 
 }
+}
+}
 else if($cmd == "check"){
+
+  $sql = "SELECT tmStatus,tmRealAmount,tmCode FROM member WHERE tmCode=".$_POST['paymeCode'];
+  $sqlresult = mysqli_query($con,$sql);
+  if($sqlresult->num_rows > 0){
+      while ($rows = $sqlresult->fetch_array(MYSQL_BOTH)) {
+          if($rows['tmStatus'] == 1){
+            $myArray[0] = 1;
+            $myArray[1] = $rows['tmRealAmount'];
+            $myArray[2] = $rows['tmCode'];
+          }else if($rows['tmStatus'] == 0){
+            $myArray[0] = 9;
+          }else if($rows['tmStatus'] == 7){
+            $myArray[0] = 5;
+          }
+      }
+  }
 
     }
 
 
 
 
-
+    echo json_encode($myArray);
+    exit();
 
 ?>
