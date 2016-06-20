@@ -173,7 +173,7 @@ footer h2{
 	font-weight: normal;
 	left: 50%;
 	margin-left: -400px;
-	padding: 3px 0 0;
+	padding: 0px 0 0;
 	position: absolute;
 	width: 540px;
 }
@@ -187,7 +187,7 @@ footer a.tzine,a.tzine:visited{
 	color: #999999;
 	font-size: 12px;
 	left: 50%;
-	margin: 22px 0 0 110px;
+	margin: 18px 0 0 110px;
 	position: absolute;
 	text-decoration: none;
 	top: 0;
