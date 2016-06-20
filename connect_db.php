@@ -2,7 +2,7 @@
 
 	$serverName = "localhost";
 	$userName	= "root";
-	$userPassword = "Wuttinunt__1994";
+	$userPassword = "";
 	$dbName		= "facebook";
 	$con = mysqli_connect($serverName,$userName,$userPassword,$dbName);
 	mysqli_set_charset($con,"utf8");
