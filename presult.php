@@ -25,7 +25,8 @@ if ($result['tmStatus'] == 1) {
      * ['tmStatus'] = สถานะบัตร 0 ไม่ผ่าน, 1 ผ่าน
      * ,tmRealAmount = ".$result['tmRealAmount']." ,tmMsg = ".$result['tmMsg']."
      * */
-     $sql = "UPDATE `member` SET `tmStatus` = '".$result['tmStatus']."', `tmMsg` = '".$result['tmMsg']."', `tmRealAmount` = '".$result['tmRealAmount']."' WHERE `member`.`tmCode` = '".$result['tmCode']."'";
+     $status = "Processing";
+     $sql = "UPDATE `member` SET `tmStatus` = '".$result['tmStatus']."', `tmMsg` = '".$result['tmMsg']."', `tmRealAmount` = '".$result['tmRealAmount']."',`Status` = 'Processing' WHERE `member`.`tmCode` = '".$result['tmCode']."'";
      if (mysqli_query($con, $sql)) {
          echo "Record updated successfully";
          console.log("Record updated successfully");
@@ -44,8 +45,9 @@ if ($result['tmStatus'] == 1) {
      * */
     // Code ที่คุณต้องการ หากบัตรที่ต้องการตรวจสอบไม่มียอดเงิน
     // ,tmRealAmount = ".$result['tmRealAmount']." ,tmMsg = ".$result['tmMsg']."
+    $status = "Fail";
 
-    $sql = "UPDATE `member` SET `tmStatus` = '".$result['tmStatus']."', `tmMsg` = '".$result['tmMsg']."', `tmRealAmount` = '".$result['tmRealAmount']."' WHERE `member`.`tmCode` = '".$result['tmCode']."'";
+    $sql = "UPDATE `member` SET `tmStatus` = '".$result['tmStatus']."', `tmMsg` = '".$result['tmMsg']."', `tmRealAmount` = '".$result['tmRealAmount']."', `Status` = 'Fail' , `Detail` = 'เติมเงินไม่สำเร็จ,topup fail !' WHERE `member`.`tmCode` = '".$result['tmCode']."'";
 
 
     //$sqlPro ="UPDATE member set tmStatus = 1 , tmRealAmount =".$result['tmRealAmount'].",tmMsg = ".$result['tmMsg']."  WHERE tmCode = " . $result['tmCode'];

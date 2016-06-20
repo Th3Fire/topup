@@ -104,7 +104,7 @@ class Payme
 
     public static function log($msg)
     {
-        file_put_contents("log-topup-pm.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
+        file_put_contents("logsTU/log-topup-pm.txt", date("Y-m-d H:i:s") . " - $msg\n", FILE_APPEND);
     }
 
     private static function validate_custom($pattern, $string)
